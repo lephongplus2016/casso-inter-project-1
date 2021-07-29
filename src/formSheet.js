@@ -65,6 +65,7 @@ function formSheet(){
 
 
   mySheet.getRange('A1:E1').setHorizontalAlignment('center');
+  mySheet.getRange('A:B').setHorizontalAlignment('center');
   mySheet.getRange('A1:E1').setFontWeight('bold');
 
 }
