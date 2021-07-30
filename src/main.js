@@ -55,7 +55,7 @@ function convertDate(date) {
     var year = +date.substring(6, 10);
     var month = +date.substring(3, 5);
     var day = +date.substring(0, 2);
-    let date_trans = new Date(year, month - 1, day + 2);
+    let date_trans = new Date(year, month - 1, day + 1);
     date_trans = Utilities.formatDate(date_trans, "GTM", "yyyy-MM-dd");
     return date_trans;
 }
