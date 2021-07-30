@@ -46,12 +46,12 @@ function formSheet(){
   }
   SpreadsheetApp.getUi().alert('Please fill API key in Values of API Sheet');
   //--------------------------------------------------------------------------Sheet Transactions----------------------
-  mySheet = activeSpreadsheet.getSheetByName("Transactions");
+  mySheet = activeSpreadsheet.getSheetByName("Giao dịch ngân hàng");
   if (mySheet != null) {
     activeSpreadsheet.deleteSheet(mySheet);
   }
-  activeSpreadsheet.insertSheet().setName('Transactions');
-  mySheet = activeSpreadsheet.getSheetByName("Transactions");
+  activeSpreadsheet.insertSheet().setName('Giao dịch ngân hàng');
+  mySheet = activeSpreadsheet.getSheetByName("Giao dịch ngân hàng");
 
   mySheet.getRange('A1').setValue('ID');
   mySheet.getRange('B1').setValue('Date');
