@@ -23,6 +23,10 @@ function addTransactions(data) {
         "Giao dịch ngân hàng"
     );
     var add_new = 0;
+
+    // mang cac giao dich moi nhat
+    var new_tran = [];
+
     data.forEach(function (i) {
         let id = i.id;
         let date = i.when;
@@ -69,11 +73,35 @@ function addTransactions(data) {
             // xử lý amount format
             var formats = [["#,###"]];
             transactionSheet.getRange(cell_colored).setNumberFormat(formats);
+
+            //log nhung ngay lon hon ngay dau tien
+            var firstDate = transactionSheet.getRange("B2").getValue();
+            if (compareDate(date, firstDate)) {
+                Logger.log("Ngay nay moi ne :" + date + " tại row :" + numRow);
+                new_tran.push(numRow);
+            }
         }
     });
 
     // sắp xếp theo ngày mới nhất
+    var numRow = new_tran.length;
+    transactionSheet.insertRows(2, numRow);
     transactionSheet
-        .getRange(2, 1, transactionSheet.getLastRow() - 1, 5)
-        .sort({ column: 2, ascending: false });
+        .getRange(new_tran[0] + numRow + 1, 1, numRow, 5)
+        .copyTo(transactionSheet.getRange(2, 1, numRow, 5));
+    transactionSheet.deleteRows(new_tran[0] + numRow + 1, numRow);
+}
+
+function compareDate(date01, date02) {
+    var thisdate1 = date01.substring(0, 2);
+    var thismonth1 = date01.substring(3, 5);
+    var thisyear1 = date01.substring(6, 10);
+    let new1 = new Date(thisyear1, thismonth1 - 1, thisdate1);
+
+    var thisdate2 = date02.substring(0, 2);
+    var thismonth2 = date02.substring(3, 5);
+    var thisyear2 = date02.substring(6, 10);
+    let new2 = new Date(thisyear2, thismonth2 - 1, thisdate2);
+
+    return new1.valueOf() > new2.valueOf();
 }
