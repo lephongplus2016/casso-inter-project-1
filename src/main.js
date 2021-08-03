@@ -63,9 +63,9 @@ function convertDate(date) {
 }
 
 // cac ham trong menu ========================================================================================================
-function api_html(){
-  var html = HtmlService.createHtmlOutputFromFile('API_key');
-  SpreadsheetApp.getUi().showModalDialog(html, "Log In");
+function api_html() {
+    var html = HtmlService.createHtmlOutputFromFile("API_key");
+    SpreadsheetApp.getUi().showModalDialog(html, "Log In to Casso");
 }
 
 function runUserInfo() {
@@ -117,4 +117,26 @@ function showLoadingSlowDialog() {
         .setHeight(100);
     SpreadsheetApp.getUi() // Or DocumentApp or SlidesApp or FormApp.
         .showModalDialog(html, "App is loading!");
+}
+
+// ham ui lua chon
+function showIndex() {
+    //lay ten nguoi dung
+    var myFile = SpreadsheetApp.getActiveSpreadsheet();
+    var apiSheet = myFile.getSheetByName("Values of API");
+    var api_key = apiSheet.getRange("B1").getValue();
+    if (api_key == "Fill API key here") {
+        SpreadsheetApp.getUi().alert("Please fill API Key!");
+    } else {
+        var token = apiSheet.getRange("B3").getValue();
+        var nameUser = getNameUser(token);
+    }
+
+    // chay sidebar
+    var tmp = HtmlService.createTemplateFromFile("index");
+    tmp.nameUser = nameUser;
+    var html = tmp.evaluate().setTitle("Casso API");
+
+    SpreadsheetApp.getUi() // Or DocumentApp or SlidesApp or FormApp.
+        .showSidebar(html);
 }
