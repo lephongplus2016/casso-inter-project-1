@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <title>Log In</title>
+    <style>
+      input{
+        margin: 10px;
+      }
+    </style>
+    
+  </head>
+  <body>
+    <h1>Authorization</h1>
+    Email: &nbsp; &nbsp; <input type="text" id="email"/> 
+    <br>
+    API key: <input type="text" id="key"/>
+    <br>
+    <input type="button" value="Submit" onclick="getApi()"/>
+    <script>
+      function getApi(){
+        var email = document.getElementById("email").value;
+        var key = document.getElementById("key").value;
+        google.script.run.getToken(email, key);
+      }
+    </script>
+  </body>
+</html>

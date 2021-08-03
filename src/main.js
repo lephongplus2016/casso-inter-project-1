@@ -4,6 +4,8 @@ function onOpen() {
     ui.createMenu("Menu")
         .addItem("Form Sheet", "formSheet")
         .addSeparator()
+        .addItem("Input API key", "api_html")
+        .addSeparator()
         .addItem("Get User Info", "runUserInfo")
         .addSeparator()
         .addItem("Get Transactions", "runTransactions")
@@ -61,6 +63,11 @@ function convertDate(date) {
 }
 
 // cac ham trong menu ========================================================================================================
+function api_html(){
+  var html = HtmlService.createHtmlOutputFromFile('API_key');
+  SpreadsheetApp.getUi().showModalDialog(html, "Log In");
+}
+
 function runUserInfo() {
     var myFile = SpreadsheetApp.getActiveSpreadsheet();
     var apiSheet = myFile.getSheetByName("Values of API");
@@ -69,7 +76,7 @@ function runUserInfo() {
         SpreadsheetApp.getUi().alert("Please fill API Key!");
     } else {
         showLoadingDialog();
-        var token = postApiKeyToToken();
+        var token = apiSheet.getRange("B3").getValue();
         getUserInfo(token);
     }
 }

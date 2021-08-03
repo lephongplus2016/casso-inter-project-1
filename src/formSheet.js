@@ -10,6 +10,7 @@ function formSheet(){
   var cell = mySheet.getRange('A1');
   cell.setValue('API key');
   mySheet.getRange('B1').setValue('Fill API key here');
+  mySheet.setColumnWidth(2,200);
   //-------------------------------------------------------------- Sheet UserID------------------------------------------------
   mySheet = activeSpreadsheet.getSheetByName("UserID");
   if (mySheet != null) {
