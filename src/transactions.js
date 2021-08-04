@@ -1,5 +1,6 @@
 // Hàm api lấy transactions
 function getTransaction(fromDate, token) {
+  try{
     var options = {
         method: "get",
         headers: {
@@ -12,15 +13,20 @@ function getTransaction(fromDate, token) {
             "&sort=DESC&pageSize=100",
         options
     );
+  }
+  catch(e){
+    SpreadsheetApp.getUi().alert("Access Token Is Expired \n Please choose Get Token in the Menu and then replay the function you want");
+  }
     var res = JSON.parse(response.getContentText());
-    Logger.log(res.data.records);
+    //Logger.log(res.data.records);
     addTransactions(res.data.records);
+  
 }
 
 // them transactions vao sheet 'Transactions'
 function addTransactions(data) {
     transactionSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(
-        "Giao dịch ngân hàng"
+        "Transactions"
     );
     var add_new = 0;
 

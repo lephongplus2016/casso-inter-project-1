@@ -31,6 +31,8 @@
                     margin: 25px 0;
                 }
             }
+
+            
         </style>
     </head>
     <body>
@@ -48,13 +50,11 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#"
-                        >Welcome <label id="userName">test</label> !
-                    </a>
+                    <a class="navbar-brand" href="#">Welcome  <label id='userName'>test</label> ! </a>
                 </div>
                 <div class="collapse navbar-collapse" id="myNavbar">
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a href="#">ABOUT</a></li>
+                        <li><a href="#" onclick="removeAPIKey()">Remove Api Key</a></li>
                     </ul>
                 </div>
             </div>
@@ -63,21 +63,26 @@
         <!-- các feature tính năng -->
         <div class="container-fluid">
             <div class="text-center">
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
                 <h3>DashBoard</h3>
+                
             </div>
             <h4>Select the feature you want to perform</h4>
             <div class="row">
                 <div class="col-xs-12">
-                    <button
-                        type="button"
-                        class="btn btn-info btn-block"
-                        onclick="getUserInfo()"
-                    >
+                    <button type="button" class="btn btn-info btn-block" onclick="getTokenAgain()">
+                        Get Token
+                    </button>
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-xs-12">
+                    <button type="button" class="btn btn-info btn-block" onclick="getUserInfo()">
                         Get User Info
                     </button>
                 </div>
@@ -85,11 +90,7 @@
             <br />
             <div class="row">
                 <div class="col-xs-12">
-                    <button
-                        type="button"
-                        class="btn btn-info btn-block"
-                        onclick="getTransactions()"
-                    >
+                    <button type="button" class="btn btn-info btn-block" onclick="getTransactions()">
                         Get Transactions
                     </button>
                 </div>
@@ -98,16 +99,26 @@
     </body>
 
     <script>
-        function getUserInfo(){
-          google.script.run.runUserInfo();
-        }
+      function getTokenAgain(){
+        google.script.run.getTokenAgain();
+      }
 
-        function getTransactions(){
-          google.script.run.runTransactions();
-        }
+      function getUserInfo(){
+        google.script.run.runUserInfo();
+      }
 
-        // lay input truyen vao => bien name
-        var name = <?= nameUser ?>;
-        document.getElementById('userName').innerHTML = name;
-    </script>
+      function getTransactions(){
+        google.script.run.runTransactions();
+      }
+
+      function removeAPIKey(){
+        google.script.run.removeAPIKey();
+      }
+
+      // lay input truyen vao => bien name
+      var name = <?= nameUser ?>;
+      document.getElementById('userName').innerHTML = name;
+      </script>
 </html>
+
+

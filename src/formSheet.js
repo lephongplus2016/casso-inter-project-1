@@ -9,7 +9,7 @@ function formSheet(){
   mySheet = activeSpreadsheet.getSheetByName("Values of API");
   var cell = mySheet.getRange('A1');
   cell.setValue('API key');
-  mySheet.getRange('B1').setValue('Fill API key here');
+  mySheet.getRange('B1').setValue('Please choose Input API key in the Menu before active other functions');
   mySheet.setColumnWidth(2,200);
   //-------------------------------------------------------------- Sheet UserID------------------------------------------------
   mySheet = activeSpreadsheet.getSheetByName("UserID");
@@ -45,14 +45,13 @@ function formSheet(){
   if (mySheet != null) {
     activeSpreadsheet.deleteSheet(mySheet);
   }
-  SpreadsheetApp.getUi().alert('Please fill API key in Values of API Sheet');
   //--------------------------------------------------------------------------Sheet Transactions----------------------
-  mySheet = activeSpreadsheet.getSheetByName("Giao dịch ngân hàng");
+  mySheet = activeSpreadsheet.getSheetByName("Transactions");
   if (mySheet != null) {
     activeSpreadsheet.deleteSheet(mySheet);
   }
-  activeSpreadsheet.insertSheet().setName('Giao dịch ngân hàng');
-  mySheet = activeSpreadsheet.getSheetByName("Giao dịch ngân hàng");
+  activeSpreadsheet.insertSheet().setName('Transactions');
+  mySheet = activeSpreadsheet.getSheetByName("Transactions");
 
   mySheet.getRange('A1').setValue('ID');
   mySheet.getRange('B1').setValue('Date');
@@ -68,5 +67,7 @@ function formSheet(){
   mySheet.getRange('A1:E1').setHorizontalAlignment('center');
   mySheet.getRange('A:B').setHorizontalAlignment('center');
   mySheet.getRange('A1:E1').setFontWeight('bold');
+  
+  SpreadsheetApp.getUi().alert('Please choose Input API key in the Menu before active other functions');
 
 }
