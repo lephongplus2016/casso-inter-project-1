@@ -4,7 +4,7 @@ function onOpen() {
     ui.createMenu("Menu")
         .addItem("Start App", "formSheet")
         .addSeparator()
-        .addItem("Input API key", "input_api_html")
+        .addItem("Input API key", "showWelcome")
         .addSeparator()
         .addItem("DashBoard", "showIndex")
         .addSeparator()
@@ -53,7 +53,7 @@ function checkAPIKeyIsAvailable() {
 }
 
 // cac ham trong menu ========================================================================================================
-function input_api_html() {
+function run_input_api() {
     // check is user run start app
     var myFile = SpreadsheetApp.getActiveSpreadsheet();
     var apiSheet = myFile.getSheetByName("Values of API");
@@ -61,8 +61,8 @@ function input_api_html() {
         SpreadsheetApp.getUi().alert("You have to run start app first!");
         return false;
     }
-    var html = HtmlService.createHtmlOutputFromFile("API_key");
-    SpreadsheetApp.getUi().showModalDialog(html, "Log In to Casso");
+    var html = HtmlService.createHtmlOutputFromFile("input_api_key");
+    SpreadsheetApp.getUi().showModalDialog(html, "Log In to Casso").setHeight(800);
 }
 
 function runUserInfo() {
@@ -156,14 +156,24 @@ function showIndex() {
         } else {
             var token = apiSheet.getRange("B3").getValue();
             var nameUser = getNameUser(token);
+            var emailUser= getEmailUser(token);
         }
 
         // chay sidebar
         var tmp = HtmlService.createTemplateFromFile("index");
         tmp.nameUser = nameUser;
+        tmp.emailUser = emailUser;
         var html = tmp.evaluate().setTitle("Casso API");
 
         SpreadsheetApp.getUi() // Or DocumentApp or SlidesApp or FormApp.
             .showSidebar(html);
     }
+}
+
+// dialog welcome
+function showWelcome(){
+  var html = HtmlService.createHtmlOutputFromFile("welcome");
+       
+    SpreadsheetApp.getUi() // Or DocumentApp or SlidesApp or FormApp.
+        .showModelessDialog(html, "Welcome");
 }

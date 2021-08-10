@@ -64,3 +64,22 @@ function getNameUser(token){
   var users = res.data.business.name;
   return users;
 }
+
+//Lay email nguoi dung
+function getEmailUser(token){
+    var userSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('UserID');
+  var options = {
+      method: "get",
+      contentType: "application/json",
+      headers: {
+          Authorization: token,
+      },
+  };
+  var response = UrlFetchApp.fetch(
+      "http://dev.casso.vn:3338/v1/userInfo",
+      options
+  );
+  var res = JSON.parse(response.getContentText());
+  var email = res.data.user.email;
+  return email;
+}

@@ -10,10 +10,10 @@
         />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-        <style>
+               <style>
             .navbar {
                 margin-bottom: 0;
-                background-color: #0e6802;
+                background-color: #eaeaea;
                 z-index: 9999;
                 border: 0;
                 font-size: 12px !important;
@@ -23,8 +23,17 @@
             }
             .navbar li a,
             .navbar .navbar-brand {
-                color: #fff !important;
+                color: black !important;
             }
+
+            /*xu ly form ho so */
+
+            .navbar .info-container {
+                float: right;
+                font-family:Arial, Helvetica, sans-serif;
+            }
+
+
             @media screen and (max-width: 768px) {
                 .col-sm-4 {
                     text-align: center;
@@ -32,7 +41,38 @@
                 }
             }
 
-            
+            /* xu ly button*/
+            button {
+                background-color: #15ab64; /* Green */
+                border: none;
+                color: white;
+                padding: 32px 16px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                margin: 4px 2px;
+                transition-duration: 0.4s;
+                cursor: pointer;
+            }
+
+            .button1 {
+                background-color: #15ab64;
+                color: white;
+                border: 2px solid #4caf50;
+                /* width: 50%; */
+
+                box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2),
+                    0 6px 20px 0 rgba(0, 0, 0, 0.19);
+            }
+
+            .button1:hover {
+                background-color: white;
+                color: black;
+                border: 2px solid #15ab64;
+                box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24),
+                    0 17px 50px 0 rgba(0, 0, 0, 0.19);
+            }
         </style>
     </head>
     <body>
@@ -54,6 +94,29 @@
                 </div>
                 <div class="collapse navbar-collapse" id="myNavbar">
                     <ul class="nav navbar-nav navbar-right">
+                       <li>
+                            <div class="info-container">
+                                <p class="text-center">Hồ sơ</p>
+                                <hr
+                                    style="
+                                        height: 0.5px;
+                                        border-width: 0;
+                                        color: gray;
+                                        background-color: gray;
+                                    "
+                                />
+                                <p>Email: <span id='emailName'>test</label></span>
+                                <p>Tên Doanh Nghiệp: <span id='userName2'>test</label></span>
+                                <hr
+                                    style="
+                                        height: 2px;
+                                        border-width: 0;
+                                        color: gray;
+                                        background-color: gray;
+                                    "
+                                />
+                            </div>
+                        </li>
                         <li><a href="#" onclick="removeAPIKey()">Remove Api Key</a></li>
                     </ul>
                 </div>
@@ -63,18 +126,20 @@
         <!-- các feature tính năng -->
         <div class="container-fluid">
             <div class="text-center">
-                <br>
-                <br>
-                <br>
-                <br>
-                <br>
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
                 <h3>DashBoard</h3>
-                
             </div>
             <h4>Select the feature you want to perform</h4>
             <div class="row">
                 <div class="col-xs-12">
-                    <button type="button" class="btn btn-info btn-block" onclick="getTokenAgain()">
+                    <button
+                        class="button button1 btn-block"
+                        onclick="getTokenAgain()"
+                    >
                         Get Token
                     </button>
                 </div>
@@ -82,7 +147,14 @@
             <br />
             <div class="row">
                 <div class="col-xs-12">
-                    <button type="button" class="btn btn-info btn-block" onclick="getUserInfo()">
+                    <button
+                        type="button"
+                        class="button button1 btn-block"
+                        onclick="getUserInfo()"
+                        data-toggle="tooltip"
+                        data-placement="top"
+                        title="Get User Info into a Sheet!"
+                    >
                         Get User Info
                     </button>
                 </div>
@@ -90,7 +162,14 @@
             <br />
             <div class="row">
                 <div class="col-xs-12">
-                    <button type="button" class="btn btn-info btn-block" onclick="getTransactions()">
+                    <button
+                        type="button"
+                        class="button button1 btn-block"
+                        onclick="getTransactions()"
+                        data-toggle="tooltip"
+                        data-placement="top"
+                        title="This feature will take your entire Casso banking transaction and add it to a sheet."
+                    >
                         Get Transactions
                     </button>
                 </div>
@@ -118,6 +197,15 @@
       // lay input truyen vao => bien name
       var name = <?= nameUser ?>;
       document.getElementById('userName').innerHTML = name;
+      document.getElementById('userName2').innerHTML = name;
+
+      var email = <?= emailUser ?>;
+      document.getElementById('emailName').innerHTML = email;
+
+      // jQuery cho tooltip
+      $(document).ready(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
       </script>
 </html>
 
