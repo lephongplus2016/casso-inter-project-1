@@ -14,6 +14,12 @@ function onOpen() {
         .addSeparator()
         .addItem("Get Transactions", "runTransactions")
         .addToUi();
+
+    
+}
+
+function onOpenHandler(){
+  updateTrans();
 }
 //============================================================================================================================
 
