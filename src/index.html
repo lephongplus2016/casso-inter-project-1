@@ -134,17 +134,7 @@
                 <h3>DashBoard</h3>
             </div>
             <h4>Select the feature you want to perform</h4>
-            <div class="row">
-                <div class="col-xs-12">
-                    <button
-                        class="button button1 btn-block"
-                        onclick="getTokenAgain()"
-                    >
-                        Get Token
-                    </button>
-                </div>
-            </div>
-            <br />
+           
             <div class="row">
                 <div class="col-xs-12">
                     <button
@@ -178,10 +168,7 @@
     </body>
 
     <script>
-      function getTokenAgain(){
-        google.script.run.getTokenAgain();
-      }
-
+      
       function getUserInfo(){
         google.script.run.runUserInfo();
       }

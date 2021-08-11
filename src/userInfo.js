@@ -19,7 +19,8 @@ function getUserInfo(token) {
     addUser(users, userSheet);
   }
   catch(e){
-    SpreadsheetApp.getUi().alert("Access Token Is Expired \n Please choose Get Token in the Menu and then replay the function you want");
+    SpreadsheetApp.getUi().alert("Access Token Is Expired ");
+    showGetToken();
   }
 }
 

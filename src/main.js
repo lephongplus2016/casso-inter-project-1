@@ -14,8 +14,6 @@ function onOpen() {
         .addSeparator()
         .addItem("Get Transactions", "runTransactions")
         .addToUi();
-
-    
 }
 //============================================================================================================================
 
@@ -54,6 +52,43 @@ function checkAPIKeyIsAvailable() {
     }
 }
 
+// check cho mo dashboard
+function checkTokenIsAvailable() {
+    var myFile = SpreadsheetApp.getActiveSpreadsheet();
+
+    var apiSheet = myFile.getSheetByName("Values of API");
+    if (apiSheet == null) {
+        SpreadsheetApp.getUi().alert("You have to run start app first!");
+        return false;
+    }
+    var token = apiSheet.getRange("B3").getValue();
+    if (token == "") {
+        SpreadsheetApp.getUi().alert(
+            "You deleted the api key, please login again to use the service!"
+        );
+        return false;
+    }
+    try {
+        var userSheet =
+            SpreadsheetApp.getActiveSpreadsheet().getSheetByName("UserID");
+        var options = {
+            method: "get",
+            contentType: "application/json",
+            headers: {
+                Authorization: token,
+            },
+        };
+        var response = UrlFetchApp.fetch(
+            "http://dev.casso.vn:3338/v1/userInfo",
+            options
+        );
+        return true;
+    } catch (e) {
+        SpreadsheetApp.getUi().alert("Access Token Is Expired ");
+        showGetToken();
+        return false;
+    }
+}
 // cac ham trong menu ========================================================================================================
 function run_input_api() {
     // check is user run start app
@@ -64,7 +99,9 @@ function run_input_api() {
         return false;
     }
     var html = HtmlService.createHtmlOutputFromFile("input_api_key");
-    SpreadsheetApp.getUi().showModalDialog(html, "Log In to Casso").setHeight(800);
+    SpreadsheetApp.getUi()
+        .showModalDialog(html, "Log In to Casso")
+        .setHeight(800);
 }
 
 function runUserInfo() {
@@ -120,6 +157,47 @@ function runTransactions() {
         }
     }
 }
+
+// ham ui lua chon
+function showIndex() {
+    // check api is available
+    if (checkAPIKeyIsAvailable() && checkTokenIsAvailable()) {
+        //lay ten nguoi dung
+        var myFile = SpreadsheetApp.getActiveSpreadsheet();
+        var apiSheet = myFile.getSheetByName("Values of API");
+        var api_key = apiSheet.getRange("B1").getValue();
+        if (
+            api_key ==
+                "Please choose Input API key in the Menu before active other functions" &&
+            api_key == null
+        ) {
+            SpreadsheetApp.getUi().alert(
+                "Please choose Input API key in the Menu before active other functions!"
+            );
+        } else {
+            var token = apiSheet.getRange("B3").getValue();
+            var nameUser = getNameUser(token);
+            var emailUser = getEmailUser(token);
+        }
+
+        // chay sidebar
+        var tmp = HtmlService.createTemplateFromFile("index");
+        tmp.nameUser = nameUser;
+        tmp.emailUser = emailUser;
+        var html = tmp.evaluate().setTitle("Casso API");
+
+        SpreadsheetApp.getUi() // Or DocumentApp or SlidesApp or FormApp.
+            .showSidebar(html);
+    }
+}
+
+// dialog welcome
+function showWelcome() {
+    var html = HtmlService.createHtmlOutputFromFile("welcome");
+
+    SpreadsheetApp.getUi() // Or DocumentApp or SlidesApp or FormApp.
+        .showModelessDialog(html, "Welcome");
+}
 //==========================================================================================================================
 
 // hieu ung ================================================================================================================
@@ -137,45 +215,4 @@ function showLoadingSlowDialog() {
         .setHeight(100);
     SpreadsheetApp.getUi() // Or DocumentApp or SlidesApp or FormApp.
         .showModalDialog(html, "App is loading!");
-}
-
-// ham ui lua chon
-function showIndex() {
-    // check api is available
-    if (checkAPIKeyIsAvailable()) {
-        //lay ten nguoi dung
-        var myFile = SpreadsheetApp.getActiveSpreadsheet();
-        var apiSheet = myFile.getSheetByName("Values of API");
-        var api_key = apiSheet.getRange("B1").getValue();
-        if (
-            api_key ==
-                "Please choose Input API key in the Menu before active other functions" &&
-            api_key == null
-        ) {
-            SpreadsheetApp.getUi().alert(
-                "Please choose Input API key in the Menu before active other functions!"
-            );
-        } else {
-            var token = apiSheet.getRange("B3").getValue();
-            var nameUser = getNameUser(token);
-            var emailUser= getEmailUser(token);
-        }
-
-        // chay sidebar
-        var tmp = HtmlService.createTemplateFromFile("index");
-        tmp.nameUser = nameUser;
-        tmp.emailUser = emailUser;
-        var html = tmp.evaluate().setTitle("Casso API");
-
-        SpreadsheetApp.getUi() // Or DocumentApp or SlidesApp or FormApp.
-            .showSidebar(html);
-    }
-}
-
-// dialog welcome
-function showWelcome(){
-  var html = HtmlService.createHtmlOutputFromFile("welcome");
-       
-    SpreadsheetApp.getUi() // Or DocumentApp or SlidesApp or FormApp.
-        .showModelessDialog(html, "Welcome");
 }
