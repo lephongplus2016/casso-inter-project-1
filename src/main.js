@@ -17,10 +17,6 @@ function onOpen() {
 
     
 }
-
-function onOpenHandler(){
-  updateTrans();
-}
 //============================================================================================================================
 
 function convertDate(date) {
