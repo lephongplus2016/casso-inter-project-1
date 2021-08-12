@@ -13,6 +13,8 @@ function onOpen() {
         .addItem("Get User Info", "runUserInfo")
         .addSeparator()
         .addItem("Get Transactions", "runTransactions")
+        .addSeparator()
+        .addItem("Draw Income Chart", "draw_chart")
         .addToUi();
 }
 //============================================================================================================================

@@ -164,6 +164,21 @@
                     </button>
                 </div>
             </div>
+            <br />
+            <div class="row">
+                <div class="col-xs-12">
+                    <button
+                        type="button"
+                        class="button button1 btn-block"
+                        onclick="draw_chart()"
+                        data-toggle="tooltip"
+                        data-placement="top"
+                        title="This feature will take data, which meets your requirements, from Transactions sheet into a new Sheet called Chart, and draw a Chart from data"
+                    >
+                        Draw Income Chart
+                    </button>
+                </div>
+            </div>
         </div>
     </body>
 
@@ -179,6 +194,10 @@
 
       function removeAPIKey(){
         google.script.run.removeAPIKey();
+      }
+
+      function draw_chart(){
+        google.script.run.draw_chart();
       }
 
       // lay input truyen vao => bien name

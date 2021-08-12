@@ -118,5 +118,5 @@ function compareDate(date01, date02) {
     var thisyear2 = date02.substring(6, 10);
     let new2 = new Date(thisyear2, thismonth2 - 1, thisdate2);
 
-    return new1.valueOf() > new2.valueOf();
+    return new1.valueOf() >= new2.valueOf();
 }
