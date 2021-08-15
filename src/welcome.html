@@ -69,19 +69,21 @@
     <body>
         <div class="content">
             <h3>
-                Chào mừng bạn đến với ứng dụng
+                Welcome to the app
                 <div class="p1">BankSheet</div>
             </h3>
             <br />
             <br />
             <p style="width: 400px; margin: auto">
-                Ứng dụng <span class="p2">BankSheet</span> giúp bạn kết nối dữ
-                liệu ngân hàng với Sheet của bạn.
+                The <span class="p2">BankSheet</span> app helps you connect your
+                banking data to your Sheet.
             </p>
             <br />
             <br />
             <div class="center">
-                <button class="button button1" onclick="runLogin()">Bắt đầu</button>
+                <button class="button button1" onclick="runLogin()">
+                    Next
+                </button>
             </div>
         </div>
     </body>
@@ -104,10 +106,9 @@
     ></script>
 
     <script>
-      function runLogin(){
-        google.script.run.run_input_api();
-        
-      }
+        function runLogin() {
+            google.script.run.run_input_api();
+        }
     </script>
 </html>
 

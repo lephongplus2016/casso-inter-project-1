@@ -7,14 +7,14 @@ function onOpen() {
         .addItem("Input API key", "showWelcome")
         .addSeparator()
         .addItem("DashBoard", "showIndex")
-        .addSeparator()
-        .addItem("Get Token", "getTokenAgain")
-        .addSeparator()
-        .addItem("Get User Info", "runUserInfo")
-        .addSeparator()
-        .addItem("Get Transactions", "runTransactions")
-        .addSeparator()
-        .addItem("Draw Income Chart", "draw_chart")
+        // .addSeparator()
+        // .addItem("Get Token", "getTokenAgain")
+        // .addSeparator()
+        // .addItem("Get User Info", "runUserInfo")
+        // .addSeparator()
+        // .addItem("Get Transactions", "runTransactions")
+        // .addSeparator()
+        // .addItem("Draw Income Chart", "draw_chart")
         .addToUi();
 }
 //============================================================================================================================
@@ -198,7 +198,7 @@ function showWelcome() {
     var html = HtmlService.createHtmlOutputFromFile("welcome");
 
     SpreadsheetApp.getUi() // Or DocumentApp or SlidesApp or FormApp.
-        .showModelessDialog(html, "Welcome");
+        .showModelessDialog(html, "Before start");
 }
 //==========================================================================================================================
 
