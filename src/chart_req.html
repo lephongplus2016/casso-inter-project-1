@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <style>
+      a{
+        font-size: 20px;
+      }
+      button {
+        background-color: #15ab64; /* Green */
+        border: none;
+        color: white;
+        padding: 12px 120px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        transition-duration: 0.4s;
+        cursor: pointer;
+      }
+      .button1 {
+        background-color: #15ab64;
+        color: white;
+        border: 2px solid #4caf50;
+
+        box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2),
+            0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      }
+
+      .button1:hover {
+        background-color: white;
+        color: black;
+        border: 2px solid #15ab64;
+        box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24),
+            0 17px 50px 0 rgba(0, 0, 0, 0.19);
+      }
+    </style>
+  </head>
+  <body>
+    <br><br><br>
+    <a>Chart sort according to: </a>
+    <select id="sort" style="font-size: 16px">
+      <option value="Day">Day</option>
+      <option value="Month">Month</option>
+      <option value="Quarter">Quarter</option>
+    </select>
+    <br><br>
+    <a>From Date:</a>
+    <input type="date" id="fromDate">
+    <br><br>
+    <a>To Date:</a>
+    <input type="date" id="toDate">
+    <br><br>
+
+    <button class="button button1" onclick="getReq()">Submit</button>
+  </body>
+
+  <script>
+      function getReq(){
+        var chart_sort = document.getElementById("sort").value;
+        var fromDate = document.getElementById("fromDate").value;
+        var toDate = document.getElementById("toDate").value;
+        google.script.run.chart_req(chart_sort, fromDate, toDate);
+      }
+  </script>
+</html>

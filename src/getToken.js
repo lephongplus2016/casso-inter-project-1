@@ -3,6 +3,7 @@ function getToken(email, key) {
         showLoadingDialog();
         var myFile = SpreadsheetApp.getActiveSpreadsheet();
         var apiSheet = myFile.getSheetByName("Values of API");
+        if(getLanguage() == "VN") apiSheet = myFile.getSheetByName("Các giá trị API");
         var data = {
             code: key,
         };
@@ -41,9 +42,14 @@ function getToken(email, key) {
             apiSheet.getRange("B2").setValue("");
             apiSheet.getRange("B3").setValue("");
             apiSheet.getRange("B4").setValue("");
-            SpreadsheetApp.getUi().alert(
-                "This API key is not belong to this email. \n Please try again"
-            );
+            if(getLanguage() == "EN")
+              SpreadsheetApp.getUi().alert(
+                  "This API key is not belong to this email. \n Please try again"
+              );
+            else
+              SpreadsheetApp.getUi().alert(
+                  "API key này không thuộc về email đã nhập. \n Vui lòng thử lại"
+              );
             input_api_html();
         } else {
             var time_expire = res1.expires_in;
@@ -61,9 +67,16 @@ function getToken(email, key) {
             apiSheet.getRange("B2").setValue(res1.refresh_token);
             apiSheet.getRange("A3").setValue("Access Token");
             apiSheet.getRange("B3").setValue(res1.access_token);
-            apiSheet.getRange("A4").setValue("Expire Time");
-            apiSheet.getRange("B4").setValue(newTime);
-            SpreadsheetApp.getUi().alert("Get Token successfully");
+            if(getLanguage() == "EN"){
+              apiSheet.getRange("A4").setValue("Expire Time");
+              apiSheet.getRange("B4").setValue(newTime);
+              SpreadsheetApp.getUi().alert("Get Token successfully");
+            }
+            else{
+              apiSheet.getRange("A4").setValue("Thời gian hết hạn");
+              apiSheet.getRange("B4").setValue(newTime);
+              SpreadsheetApp.getUi().alert("Lấy Token thành công");
+            }
             showIndex();
         }
     } catch (e) {
@@ -71,7 +84,10 @@ function getToken(email, key) {
         apiSheet.getRange("B2").setValue("");
         apiSheet.getRange("B3").setValue("");
         apiSheet.getRange("B4").setValue("");
-        SpreadsheetApp.getUi().alert("Wrong API key. \n Please try again");
+        if(getLanguage() == "EN")
+          SpreadsheetApp.getUi().alert("Wrong API key. \n Please try again");
+        else
+          SpreadsheetApp.getUi().alert("Sai API key. \n Vui lòng thử lại");
         input_api_html();
     }
 }
@@ -79,10 +95,12 @@ function getToken(email, key) {
 function getTokenAgain() {
     try {
         showLoadingDialog();
-        var apiSheet =
-            SpreadsheetApp.getActiveSpreadsheet().getSheetByName(
-                "Values of API"
-            );
+        var language = "EN";
+        var apiSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Values of API");
+        if(apiSheet == null){
+          apiSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Các giá trị API");
+          language = "VN";
+        }
         var api_key = apiSheet.getRange("B1").getValue();
         var data = {
             code: api_key,
@@ -113,9 +131,16 @@ function getTokenAgain() {
         apiSheet.getRange("B2").setValue(res1.refresh_token);
         apiSheet.getRange("A3").setValue("Access Token");
         apiSheet.getRange("B3").setValue(res1.access_token);
-        apiSheet.getRange("A4").setValue("Expire Time");
-        apiSheet.getRange("B4").setValue(newTime);
-        SpreadsheetApp.getUi().alert("Get Token successfully");
+        if(language == "EN"){
+          apiSheet.getRange("A4").setValue("Expire Time");
+          apiSheet.getRange("B4").setValue(newTime);
+          SpreadsheetApp.getUi().alert("Get Token successfully");
+        }
+        else{
+          apiSheet.getRange("A4").setValue("Thời gian hết hạn");
+          apiSheet.getRange("B4").setValue(newTime);
+          SpreadsheetApp.getUi().alert("Lấy Token thành công");
+        }
         showIndex();
     } catch (e) {
         apiSheet.getRange("B1").setValue("");
@@ -132,11 +157,21 @@ function getTokenAgain() {
 // hàm getTokenAgain sẽ không thể được gọi ở menu nữa, chỉ xuất hiện khi gọi showGetToken
 function showGetToken() {
     var ui = SpreadsheetApp.getUi();
-    var result = ui.alert(
-        "Please confirm",
-        "Your token has expired, do you want to get a new token?",
-        ui.ButtonSet.YES_NO
-    );
+    var apiSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Values of API");
+    if(apiSheet != null){
+      var result = ui.alert(
+          "Please confirm",
+          "Your token has expired, do you want to get a new token?",
+          ui.ButtonSet.YES_NO
+      );
+    }
+    else{
+      var result = ui.alert(
+          "Vui lòng xác nhận",
+          "Token của bạn đã hết bạn, bạn có muốn lấy token mới không?",
+          ui.ButtonSet.YES_NO
+      );
+    }
 
     if (result == ui.Button.YES) {
         // User clicked "Yes".

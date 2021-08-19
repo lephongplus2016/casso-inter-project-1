@@ -1,7 +1,7 @@
 // Hàm get api lấy user info
 function getUserInfo(token) {
+  var language = getLanguage();
   try{
-    var userSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('UserID');
     var options = {
         method: "get",
         contentType: "application/json",
@@ -14,14 +14,17 @@ function getUserInfo(token) {
         options
     );
     var res = JSON.parse(response.getContentText());
+  }
+  catch(e){
+    if(language == "EN") SpreadsheetApp.getUi().alert("Access Token Is Expired ");
+    else SpreadsheetApp.getUi().alert("Access Token đã hết hạn");
+    showGetToken();
+  }
+    var userSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('User Info');
+    if(language == "VN") userSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Thông tin người dùng');
     var users = res.data;
     //Logger.log(users.bankAccs);
     addUser(users, userSheet);
-  }
-  catch(e){
-    SpreadsheetApp.getUi().alert("Access Token Is Expired ");
-    showGetToken();
-  }
 }
 
 // them user trong sheet userinfo
@@ -49,7 +52,7 @@ function addUser(value, userSheet){
 
 // Lay thong tin ten nguoi dung
 function getNameUser(token){
-    var userSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('UserID');
+    var userSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('User Info');
   var options = {
       method: "get",
       contentType: "application/json",
@@ -68,7 +71,7 @@ function getNameUser(token){
 
 //Lay email nguoi dung
 function getEmailUser(token){
-    var userSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('UserID');
+    var userSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('User Info');
   var options = {
       method: "get",
       contentType: "application/json",
