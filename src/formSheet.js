@@ -1,10 +1,5 @@
 //hàm tạo mẫu gg sheet
 function formSheet(){
-  var triggers = ScriptApp.getProjectTriggers();
-  for (var i = 0; i < triggers.length; i++) {
-    ScriptApp.deleteTrigger(triggers[i]);
-  }
-  create_onOpen();
   var ui = SpreadsheetApp.getUi();
   var language = "EN"
   var response = ui.alert('Bạn có muốn thiết lập Tiếng Việt làm ngôn ngữ mặc định? \n If you want to set English as your default language, please click on No or turn off this form', ui.ButtonSet.YES_NO);

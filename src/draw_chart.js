@@ -1,62 +1,64 @@
-function chart_html(){
-  var language = getLanguage();
-  if(language == "EN"){
-    var html = HtmlService.createHtmlOutputFromFile("chart_req");
-    SpreadsheetApp.getUi() // Or DocumentApp or SlidesApp or FormApp.
-    .showModelessDialog(html, "Chart requirements");
-  }
-  else{
-    var html = HtmlService.createHtmlOutputFromFile("chart_req_VN");
-    SpreadsheetApp.getUi() // Or DocumentApp or SlidesApp or FormApp.
-    .showModelessDialog(html, "Các yêu cầu vẽ biểu đồ");
-  }
+//function in dashboard
+// only check the api key, use it even if the token expires
+function chart_html() {
+    // check api is available
+    if (checkAPIKeyIsAvailable()) {
+        var language = getLanguage();
+        if (language == "EN") {
+            var html = HtmlService.createHtmlOutputFromFile("chart_req");
+            SpreadsheetApp.getUi() // Or DocumentApp or SlidesApp or FormApp.
+                .showModelessDialog(html, "Chart requirements");
+        } else {
+            var html = HtmlService.createHtmlOutputFromFile("chart_req_VN");
+            SpreadsheetApp.getUi() // Or DocumentApp or SlidesApp or FormApp.
+                .showModelessDialog(html, "Các yêu cầu vẽ biểu đồ");
+        }
+    }
 }
 
-function convertDateFromHTML(date){
-  var day = date.substring(8,10);
-  var month = date.substring(5,7);
-  var year = date.substring(0,4);
-  return day + "-" + month + "-" + year;
+function convertDateFromHTML(date) {
+    var day = date.substring(8, 10);
+    var month = date.substring(5, 7);
+    var year = date.substring(0, 4);
+    return day + "-" + month + "-" + year;
 }
 
-function chart_req(chart_sort, fromDate, toDate){
-  fromDate = convertDateFromHTML(fromDate);
-  toDate = convertDateFromHTML(toDate);
-  var activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-  var chartSheet;
-  if(chart_sort == "Day"){
-    chartSheet = activeSpreadsheet.getSheetByName("DailyChart");
-    if (chartSheet != null) {
-        activeSpreadsheet.deleteSheet(chartSheet);
+function chart_req(chart_sort, fromDate, toDate) {
+    fromDate = convertDateFromHTML(fromDate);
+    toDate = convertDateFromHTML(toDate);
+    var activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+    var chartSheet;
+    if (chart_sort == "Day") {
+        chartSheet = activeSpreadsheet.getSheetByName("DailyChart");
+        if (chartSheet != null) {
+            activeSpreadsheet.deleteSheet(chartSheet);
+        }
+        chartSheet = activeSpreadsheet.getSheetByName("Biểu đồ ngày");
+        if (chartSheet != null) {
+            activeSpreadsheet.deleteSheet(chartSheet);
+        }
+        draw_chart_day(fromDate, toDate);
+    } else if (chart_sort == "Month") {
+        chartSheet = activeSpreadsheet.getSheetByName("MonthlyChart");
+        if (chartSheet != null) {
+            activeSpreadsheet.deleteSheet(chartSheet);
+        }
+        chartSheet = activeSpreadsheet.getSheetByName("Biểu đồ tháng");
+        if (chartSheet != null) {
+            activeSpreadsheet.deleteSheet(chartSheet);
+        }
+        draw_chart_month(fromDate, toDate);
+    } else if (chart_sort == "Quarter") {
+        chartSheet = activeSpreadsheet.getSheetByName("QuarterlyChart");
+        if (chartSheet != null) {
+            activeSpreadsheet.deleteSheet(chartSheet);
+        }
+        chartSheet = activeSpreadsheet.getSheetByName("Biểu đồ quý");
+        if (chartSheet != null) {
+            activeSpreadsheet.deleteSheet(chartSheet);
+        }
+        draw_chart_quarter(fromDate, toDate);
     }
-    chartSheet = activeSpreadsheet.getSheetByName("Biểu đồ ngày");
-    if (chartSheet != null) {
-        activeSpreadsheet.deleteSheet(chartSheet);
-    }
-    draw_chart_day(fromDate, toDate);
-  }
-  else if(chart_sort == "Month"){
-    chartSheet = activeSpreadsheet.getSheetByName("MonthlyChart");
-    if (chartSheet != null) {
-        activeSpreadsheet.deleteSheet(chartSheet);
-    }
-    chartSheet = activeSpreadsheet.getSheetByName("Biểu đồ tháng");
-    if (chartSheet != null) {
-        activeSpreadsheet.deleteSheet(chartSheet);
-    }
-    draw_chart_month(fromDate, toDate);
-  }
-  else if(chart_sort == "Quarter"){
-    chartSheet = activeSpreadsheet.getSheetByName("QuarterlyChart");
-    if (chartSheet != null) {
-        activeSpreadsheet.deleteSheet(chartSheet);
-    }
-    chartSheet = activeSpreadsheet.getSheetByName("Biểu đồ quý");
-    if (chartSheet != null) {
-        activeSpreadsheet.deleteSheet(chartSheet);
-    }
-    draw_chart_quarter(fromDate, toDate);
-  }
 }
 
 //lay data tu transaction
@@ -65,22 +67,24 @@ function getData(fromDate, toDate, nameSheet) {
     activeSpreadsheet.insertSheet().setName(nameSheet);
     chartSheet =
         SpreadsheetApp.getActiveSpreadsheet().getSheetByName(nameSheet);
-  if(getLanguage() == "EN"){
-    chartSheet.getRange("A1").setValue("Date (MM-dd-yyyy)");
-    chartSheet.getRange("B1").setValue("Revenue");
-    chartSheet.getRange("C1").setValue("Expense");
+    if (getLanguage() == "EN") {
+        chartSheet.getRange("A1").setValue("Date (MM-dd-yyyy)");
+        chartSheet.getRange("B1").setValue("Revenue");
+        chartSheet.getRange("C1").setValue("Expense");
 
-    var data_Sheet =
-        SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Transactions");
-  }
-  else{
-    chartSheet.getRange("A1").setValue("Ngày (Tháng-Ngày-Năm)");
-    chartSheet.getRange("B1").setValue("Doanh thu");
-    chartSheet.getRange("C1").setValue("Chi phí");
+        var data_Sheet =
+            SpreadsheetApp.getActiveSpreadsheet().getSheetByName(
+                "Transactions"
+            );
+    } else {
+        chartSheet.getRange("A1").setValue("Ngày (Tháng-Ngày-Năm)");
+        chartSheet.getRange("B1").setValue("Doanh thu");
+        chartSheet.getRange("C1").setValue("Chi phí");
 
-    var data_Sheet =
-        SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Giao dịch ngân hàng");
-  }
+        var data_Sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(
+            "Giao dịch ngân hàng"
+        );
+    }
     chartSheet.getRange("A1:C").setHorizontalAlignment("center");
     chartSheet.getRange("A1:C1").setFontWeight("bold");
     chartSheet.setColumnWidth(1, 200);
@@ -128,7 +132,8 @@ function handleDataForDay() {
     var activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
 
     var dailyChartSheet = activeSpreadsheet.getSheetByName("DailyChart");
-  if(getLanguage() == "VN") dailyChartSheet = activeSpreadsheet.getSheetByName("Biểu đồ ngày");
+    if (getLanguage() == "VN")
+        dailyChartSheet = activeSpreadsheet.getSheetByName("Biểu đồ ngày");
 
     dailyChartSheet
         .getRange(2, 2, dailyChartSheet.getLastRow(), 1)
@@ -182,10 +187,14 @@ function handleDataForDay() {
 
 // ham ve chart
 function chartForDay(fromDate, toDate) {
-  var language = getLanguage();
+    var language = getLanguage();
     var data_Sheet =
         SpreadsheetApp.getActiveSpreadsheet().getSheetByName("DailyChart");
-  if(language == "VN") data_Sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Biểu đồ ngày");
+    if (language == "VN")
+        data_Sheet =
+            SpreadsheetApp.getActiveSpreadsheet().getSheetByName(
+                "Biểu đồ ngày"
+            );
     var data_chart = data_Sheet.getRange("A1:C");
     var hAxisOptions = {
         slantedText: true,
@@ -197,7 +206,7 @@ function chartForDay(fromDate, toDate) {
     var lineChartBuilder = data_Sheet.newChart().asColumnChart();
     var chart = lineChartBuilder
         .addRange(data_chart)
-        .setPosition(2, 6, 0, 0)
+        .setPosition(2, 5, 0, 0)
         .setTitle("User's Income from " + fromDate + " to " + toDate)
         .setNumHeaders(1)
         .setLegendPosition(Charts.Position.RIGHT)
@@ -209,21 +218,23 @@ function chartForDay(fromDate, toDate) {
             1: { color: "red", labelInLegend: "Expense" },
         })
         .build();
-  if(language == "VN")
-    chart = lineChartBuilder
-        .addRange(data_chart)
-        .setPosition(2, 6, 0, 0)
-        .setTitle("Thu chi người dùng từ ngày " + fromDate + " đến ngày " + toDate)
-        .setNumHeaders(1)
-        .setLegendPosition(Charts.Position.RIGHT)
-        .setOption("hAxis", hAxisOptions)
-        .setOption("useFirstColumnAsDomain", true)
-        .setOption("hAxis", { title: "Ngày (tháng-ngày-năm)" })
-        .setOption("series", {
-            0: { color: "blue", labelInLegend: "Doanh thu" },
-            1: { color: "red", labelInLegend: "Chi phí" },
-        })
-        .build();
+    if (language == "VN")
+        chart = lineChartBuilder
+            .addRange(data_chart)
+            .setPosition(2, 5, 0, 0)
+            .setTitle(
+                "Thu chi người dùng từ ngày " + fromDate + " đến ngày " + toDate
+            )
+            .setNumHeaders(1)
+            .setLegendPosition(Charts.Position.RIGHT)
+            .setOption("hAxis", hAxisOptions)
+            .setOption("useFirstColumnAsDomain", true)
+            .setOption("hAxis", { title: "Ngày (tháng-ngày-năm)" })
+            .setOption("series", {
+                0: { color: "blue", labelInLegend: "Doanh thu" },
+                1: { color: "red", labelInLegend: "Chi phí" },
+            })
+            .build();
 
     data_Sheet.insertChart(chart);
 }
@@ -238,19 +249,18 @@ function draw_chart_day(fromDate, toDate) {
     // var fromDate = '15-07-2021';
     // var toDate ='23-07-2021';
     if (!compareDate(toDate, fromDate)) {
-      if(getLanguage() == "VN")
-        SpreadsheetApp.getUi().alert(
-            "Bạn vừa nhập ngày bắt đầu sau ngày kết thúc \n Vui lòng nhập lại"
-        );
-      else
-        SpreadsheetApp.getUi().alert(
-            "You just enter from Date after to Date \n Please re-enter"
-        );
+        if (getLanguage() == "VN")
+            SpreadsheetApp.getUi().alert(
+                "Bạn vừa nhập ngày bắt đầu sau ngày kết thúc \n Vui lòng nhập lại"
+            );
+        else
+            SpreadsheetApp.getUi().alert(
+                "You just enter from Date after to Date \n Please re-enter"
+            );
         chart_html();
-    } else{
-      if(getLanguage() == "VN")
-        getData(fromDate, toDate, "Biểu đồ ngày");
-      else getData(fromDate, toDate, "DailyChart");
+    } else {
+        if (getLanguage() == "VN") getData(fromDate, toDate, "Biểu đồ ngày");
+        else getData(fromDate, toDate, "DailyChart");
         handleDataForDay();
         chartForDay(fromDate, toDate);
     }
@@ -259,9 +269,8 @@ function draw_chart_day(fromDate, toDate) {
 //==============================================================================================================================
 // ve chart theo thang========================================================================================================
 function draw_chart_month(fromDate, toDate) {
-  if(getLanguage() == "EN")
-    getData(fromDate, toDate, "MonthlyChart");
-  else getData(fromDate, toDate, "Biểu đồ tháng");
+    if (getLanguage() == "EN") getData(fromDate, toDate, "MonthlyChart");
+    else getData(fromDate, toDate, "Biểu đồ tháng");
     handleDataForMonth();
     chart_month(fromDate, toDate);
 }
@@ -270,8 +279,8 @@ function handleDataForMonth() {
     var activeSpreadsheet = SpreadsheetApp.getActiveSpreadsheet();
 
     var monthlyChartSheet = activeSpreadsheet.getSheetByName("MonthlyChart");
-  if(getLanguage() == "VN")
-    monthlyChartSheet = activeSpreadsheet.getSheetByName("Biểu đồ tháng");
+    if (getLanguage() == "VN")
+        monthlyChartSheet = activeSpreadsheet.getSheetByName("Biểu đồ tháng");
 
     monthlyChartSheet
         .getRange(2, 2, monthlyChartSheet.getLastRow(), 1)
@@ -337,7 +346,11 @@ function chart_month(fromMonth, toMonth) {
     toMonth = getMonthYear(toMonth);
     var data_Sheet =
         SpreadsheetApp.getActiveSpreadsheet().getSheetByName("MonthlyChart");
-  if(getLanguage() == "VN") data_Sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Biểu đồ tháng");
+    if (getLanguage() == "VN")
+        data_Sheet =
+            SpreadsheetApp.getActiveSpreadsheet().getSheetByName(
+                "Biểu đồ tháng"
+            );
     var data_chart = data_Sheet.getRange("A1:C");
     var hAxisOptions = {
         slantedText: true,
@@ -349,7 +362,7 @@ function chart_month(fromMonth, toMonth) {
     var lineChartBuilder = data_Sheet.newChart().asColumnChart();
     var chart = lineChartBuilder
         .addRange(data_chart)
-        .setPosition(2, 6, 0, 0)
+        .setPosition(2, 5, 0, 0)
         .setTitle("User's Income from " + fromMonth + " to " + toMonth)
         .setNumHeaders(1)
         .setLegendPosition(Charts.Position.RIGHT)
@@ -361,22 +374,24 @@ function chart_month(fromMonth, toMonth) {
             1: { color: "red", labelInLegend: "Expense" },
         })
         .build();
-  if(getLanguage() == "VN")
-    chart = lineChartBuilder
-        .addRange(data_chart)
-        .setPosition(2, 6, 0, 0)
-        .setTitle("Thu chi của người dùng từ " + fromMonth + " đến " + toMonth)
-        .setNumHeaders(1)
-        .setLegendPosition(Charts.Position.RIGHT)
-        .setOption("hAxis", hAxisOptions)
-        .setOption("useFirstColumnAsDomain", true)
-        .setOption("hAxis", { title: "Tháng (tháng-năm)" })
-        .setOption("series", {
-            0: { color: "blue", labelInLegend: "Doanh thu" },
-            1: { color: "red", labelInLegend: "Chi phí" },
-        })
-        .build();
-  
+    if (getLanguage() == "VN")
+        chart = lineChartBuilder
+            .addRange(data_chart)
+            .setPosition(2, 5, 0, 0)
+            .setTitle(
+                "Thu chi của người dùng từ " + fromMonth + " đến " + toMonth
+            )
+            .setNumHeaders(1)
+            .setLegendPosition(Charts.Position.RIGHT)
+            .setOption("hAxis", hAxisOptions)
+            .setOption("useFirstColumnAsDomain", true)
+            .setOption("hAxis", { title: "Tháng (tháng-năm)" })
+            .setOption("series", {
+                0: { color: "blue", labelInLegend: "Doanh thu" },
+                1: { color: "red", labelInLegend: "Chi phí" },
+            })
+            .build();
+
     data_Sheet.insertChart(chart);
 }
 
@@ -417,9 +432,8 @@ function getMonthYear(date01) {
 // ve chart theo quý========================================================================================================
 
 function draw_chart_quarter(fromDate, toDate) {
-  if(getLanguage() == "EN")
-    getData(fromDate, toDate, "QuarterlyChart");
-  else getData(fromDate, toDate, "Biểu đồ quý"); 
+    if (getLanguage() == "EN") getData(fromDate, toDate, "QuarterlyChart");
+    else getData(fromDate, toDate, "Biểu đồ quý");
     handleDataForQuarter();
     chart_quarter(fromDate, toDate);
 }
@@ -429,8 +443,8 @@ function handleDataForQuarter() {
 
     var quarterlyChartSheet =
         activeSpreadsheet.getSheetByName("QuarterlyChart");
-  if(getLanguage() == "VN") quarterlyChartSheet =
-        activeSpreadsheet.getSheetByName("Biểu đồ quý");
+    if (getLanguage() == "VN")
+        quarterlyChartSheet = activeSpreadsheet.getSheetByName("Biểu đồ quý");
 
     quarterlyChartSheet
         .getRange(2, 2, quarterlyChartSheet.getLastRow(), 1)
@@ -484,28 +498,43 @@ function handleDataForQuarter() {
                     .getDisplayValue();
                 var year = date01.substring(6, 10);
                 var month = date01.substring(0, 2);
-              if(getLanguage() == "EN"){
-                if (month == "01" || month == "02" || month == "03") {
-                    var date_trans = "Quarter I - " + year;
-                } else if (month == "04" || month == "05" || month == "06") {
-                    var date_trans = "Quarter II - " + year;
-                } else if (month == "08" || month == "09" || month == "07") {
-                    var date_trans = "Quarter III - " + year;
+                if (getLanguage() == "EN") {
+                    if (month == "01" || month == "02" || month == "03") {
+                        var date_trans = "Quarter I - " + year;
+                    } else if (
+                        month == "04" ||
+                        month == "05" ||
+                        month == "06"
+                    ) {
+                        var date_trans = "Quarter II - " + year;
+                    } else if (
+                        month == "08" ||
+                        month == "09" ||
+                        month == "07"
+                    ) {
+                        var date_trans = "Quarter III - " + year;
+                    } else {
+                        var date_trans = "Quarter IV - " + year;
+                    }
                 } else {
-                    var date_trans = "Quarter IV - " + year;
+                    if (month == "01" || month == "02" || month == "03") {
+                        var date_trans = "Quý I - " + year;
+                    } else if (
+                        month == "04" ||
+                        month == "05" ||
+                        month == "06"
+                    ) {
+                        var date_trans = "Quý II - " + year;
+                    } else if (
+                        month == "08" ||
+                        month == "09" ||
+                        month == "07"
+                    ) {
+                        var date_trans = "Quý III - " + year;
+                    } else {
+                        var date_trans = "Quý IV - " + year;
+                    }
                 }
-              }
-              else{
-                if (month == "01" || month == "02" || month == "03") {
-                    var date_trans = "Quý I - " + year;
-                } else if (month == "04" || month == "05" || month == "06") {
-                    var date_trans = "Quý II - " + year;
-                } else if (month == "08" || month == "09" || month == "07") {
-                    var date_trans = "Quý III - " + year;
-                } else {
-                    var date_trans = "Quý IV - " + year;
-                }
-              }
                 quarterlyChartSheet.getRange(i, 1).setValue(date_trans);
                 break;
             }
@@ -518,9 +547,9 @@ function chart_quarter(fromMonth, toMonth) {
     toMonth = getMonthYearToQuarter(toMonth);
     var data_Sheet =
         SpreadsheetApp.getActiveSpreadsheet().getSheetByName("QuarterlyChart");
-  if(getLanguage() == "VN")
-    data_Sheet =
-        SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Biểu đồ quý");
+    if (getLanguage() == "VN")
+        data_Sheet =
+            SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Biểu đồ quý");
     var data_chart = data_Sheet.getRange("A1:C");
     var hAxisOptions = {
         slantedText: true,
@@ -532,7 +561,7 @@ function chart_quarter(fromMonth, toMonth) {
     var lineChartBuilder = data_Sheet.newChart().asColumnChart();
     var chart = lineChartBuilder
         .addRange(data_chart)
-        .setPosition(2, 6, 0, 0)
+        .setPosition(2, 5, 0, 0)
         .setTitle("User's Income from " + fromMonth + " to " + toMonth)
         .setNumHeaders(1)
         .setLegendPosition(Charts.Position.RIGHT)
@@ -544,21 +573,21 @@ function chart_quarter(fromMonth, toMonth) {
             1: { color: "red", labelInLegend: "Expense" },
         })
         .build();
-  if(getLanguage() == "VN")
-    chart = lineChartBuilder
-        .addRange(data_chart)
-        .setPosition(2, 6, 0, 0)
-        .setTitle("Chi phí người dùng từ " + fromMonth + " đến " + toMonth)
-        .setNumHeaders(1)
-        .setLegendPosition(Charts.Position.RIGHT)
-        .setOption("hAxis", hAxisOptions)
-        .setOption("useFirstColumnAsDomain", true)
-        .setOption("hAxis", { title: "Quý (quý-năm)" })
-        .setOption("series", {
-            0: { color: "blue", labelInLegend: "Doanh thu" },
-            1: { color: "red", labelInLegend: "Chi phí" },
-        })
-        .build();
+    if (getLanguage() == "VN")
+        chart = lineChartBuilder
+            .addRange(data_chart)
+            .setPosition(2, 5, 0, 0)
+            .setTitle("Chi phí người dùng từ " + fromMonth + " đến " + toMonth)
+            .setNumHeaders(1)
+            .setLegendPosition(Charts.Position.RIGHT)
+            .setOption("hAxis", hAxisOptions)
+            .setOption("useFirstColumnAsDomain", true)
+            .setOption("hAxis", { title: "Quý (quý-năm)" })
+            .setOption("series", {
+                0: { color: "blue", labelInLegend: "Doanh thu" },
+                1: { color: "red", labelInLegend: "Chi phí" },
+            })
+            .build();
 
     data_Sheet.insertChart(chart);
 }
@@ -619,27 +648,26 @@ function checkTheSameQuarter(date01, date02) {
 function getMonthYearToQuarter(date01) {
     var year = date01.substring(6, 10);
     var month = date01.substring(3, 5);
-  if(getLanguage() == "EN"){
-    if (month == "01" || month == "02" || month == "03") {
-        var date_trans = "Quarter I - " + year;
-    } else if (month == "04" || month == "05" || month == "06") {
-        var date_trans = "Quarter II - " + year;
-    } else if (month == "08" || month == "09" || month == "07") {
-        var date_trans = "Quarter III - " + year;
+    if (getLanguage() == "EN") {
+        if (month == "01" || month == "02" || month == "03") {
+            var date_trans = "Quarter I - " + year;
+        } else if (month == "04" || month == "05" || month == "06") {
+            var date_trans = "Quarter II - " + year;
+        } else if (month == "08" || month == "09" || month == "07") {
+            var date_trans = "Quarter III - " + year;
+        } else {
+            var date_trans = "Quarter IV - " + year;
+        }
     } else {
-        var date_trans = "Quarter IV - " + year;
+        if (month == "01" || month == "02" || month == "03") {
+            var date_trans = "Quý I - " + year;
+        } else if (month == "04" || month == "05" || month == "06") {
+            var date_trans = "Quý II - " + year;
+        } else if (month == "08" || month == "09" || month == "07") {
+            var date_trans = "Quý III - " + year;
+        } else {
+            var date_trans = "Quý IV - " + year;
+        }
     }
-  }
-  else{
-    if (month == "01" || month == "02" || month == "03") {
-        var date_trans = "Quý I - " + year;
-    } else if (month == "04" || month == "05" || month == "06") {
-        var date_trans = "Quý II - " + year;
-    } else if (month == "08" || month == "09" || month == "07") {
-        var date_trans = "Quý III - " + year;
-    } else {
-        var date_trans = "Quý IV - " + year;
-    }
-  }
     return date_trans;
 }

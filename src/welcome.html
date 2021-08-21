@@ -1,89 +1,115 @@
-// Hàm get api lấy user info
-function getUserInfo(token) {
-  var language = getLanguage();
-  try{
-    var options = {
-        method: "get",
-        contentType: "application/json",
-        headers: {
-            Authorization: token,
-        },
-    };
-    var response = UrlFetchApp.fetch(
-        "http://dev.casso.vn:3338/v1/userInfo",
-        options
-    );
-    var res = JSON.parse(response.getContentText());
-  }
-  catch(e){
-    if(language == "EN") SpreadsheetApp.getUi().alert("Access Token Is Expired ");
-    else SpreadsheetApp.getUi().alert("Access Token đã hết hạn");
-    showGetToken();
-  }
-    var userSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('User Info');
-    if(language == "VN") userSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Thông tin người dùng');
-    var users = res.data;
-    //Logger.log(users.bankAccs);
-    addUser(users, userSheet);
-}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Title</title>
+        <!-- Required meta tags -->
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+        />
 
-// them user trong sheet userinfo
-function addUser(value, userSheet){
-  //Logger.log(value.user);
-  var userID = value.user.id;
-  var userEmail = value.user.email;
-  var bussID = value.business.id;
-  var bussName = value.business.name;
-  var bankAcc = value.bankAccs[0].bank.codeName;
-  var bankId = value.bankAccs[0].bankSubAccId;    
+        <!-- Bootstrap CSS -->
+        <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+            integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+            crossorigin="anonymous"
+        />
+        <style>
+            .content {
+                max-width: 500px;
+                margin: auto;
+            }
+            .p1 {
+                font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+                color: #15ab64;
+                font-weight: bold;
+            }
+            .p2 {
+                font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+                font-weight: bold;
+            }
+            .center {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            button {
+                background-color: #15ab64; /* Green */
+                border: none;
+                color: white;
+                padding: 12px 120px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                margin: 4px 2px;
+                transition-duration: 0.4s;
+                cursor: pointer;
+            }
+            .button1 {
+                background-color: #15ab64;
+                color: white;
+                border: 2px solid #4caf50;
 
-  var row = [userID, userEmail, bussID, bussName, bankAcc, bankId];
-  userSheet.appendRow(row);
+                box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2),
+                    0 6px 20px 0 rgba(0, 0, 0, 0.19);
+            }
 
-// list bank account
-  for( var i=1; i<value.bankAccs.length; i++){
-    let tempAcc = value.bankAccs[i].bank.codeName;
-    let tempId = value.bankAccs[i].bankSubAccId;
-    let row = ["","","","",tempAcc, tempId];
-    userSheet.appendRow(row);
-  }
+            .button1:hover {
+                background-color: white;
+                color: black;
+                border: 2px solid #15ab64;
+                box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24),
+                    0 17px 50px 0 rgba(0, 0, 0, 0.19);
+            }
+        </style>
+    </head>
+    <body>
+        <div class="content">
+            <h3>
+                Welcome to the app
+                <div class="p1">BankSheet</div>
+            </h3>
+            <br />
+            <br />
+            <p style="width: 400px; margin: auto">
+                The <span class="p2">BankSheet</span> app helps you connect your
+                banking data to your Sheet.
+            </p>
+            <br />
+            <br />
+            <div class="center">
+                <button class="button button1" onclick="runLogin()">
+                    Next
+                </button>
+            </div>
+        </div>
+    </body>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script
+        src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"
+    ></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"
+    ></script>
+    <script
+        src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"
+    ></script>
 
-}
+    <script>
+        function runLogin() {
+            google.script.run.run_input_api();
+        }
+    </script>
+</html>
 
-// Lay thong tin ten nguoi dung
-function getNameUser(token){
-    var userSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('User Info');
-  var options = {
-      method: "get",
-      contentType: "application/json",
-      headers: {
-          Authorization: token,
-      },
-  };
-  var response = UrlFetchApp.fetch(
-      "http://dev.casso.vn:3338/v1/userInfo",
-      options
-  );
-  var res = JSON.parse(response.getContentText());
-  var users = res.data.business.name;
-  return users;
-}
-
-//Lay email nguoi dung
-function getEmailUser(token){
-    var userSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('User Info');
-  var options = {
-      method: "get",
-      contentType: "application/json",
-      headers: {
-          Authorization: token,
-      },
-  };
-  var response = UrlFetchApp.fetch(
-      "http://dev.casso.vn:3338/v1/userInfo",
-      options
-  );
-  var res = JSON.parse(response.getContentText());
-  var email = res.data.user.email;
-  return email;
-}
+<!-- https://www.w3schools.com/css/css3_buttons.asp -->
