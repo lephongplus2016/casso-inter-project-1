@@ -259,6 +259,7 @@ function draw_chart_day(fromDate, toDate) {
             );
         chart_html();
     } else {
+        showLoadingSlowDialog();
         if (getLanguage() == "VN") getData(fromDate, toDate, "Biểu đồ ngày");
         else getData(fromDate, toDate, "DailyChart");
         handleDataForDay();
@@ -269,6 +270,7 @@ function draw_chart_day(fromDate, toDate) {
 //==============================================================================================================================
 // ve chart theo thang========================================================================================================
 function draw_chart_month(fromDate, toDate) {
+    showLoadingSlowDialog();
     if (getLanguage() == "EN") getData(fromDate, toDate, "MonthlyChart");
     else getData(fromDate, toDate, "Biểu đồ tháng");
     handleDataForMonth();
@@ -432,6 +434,7 @@ function getMonthYear(date01) {
 // ve chart theo quý========================================================================================================
 
 function draw_chart_quarter(fromDate, toDate) {
+    showLoadingSlowDialog();
     if (getLanguage() == "EN") getData(fromDate, toDate, "QuarterlyChart");
     else getData(fromDate, toDate, "Biểu đồ quý");
     handleDataForQuarter();

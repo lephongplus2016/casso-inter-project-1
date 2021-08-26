@@ -31,17 +31,37 @@ function convertDate(date) {
 
 //logout
 function removeAPIKey() {
-    var myFile = SpreadsheetApp.getActiveSpreadsheet();
-    var language = getLanguage();
-    if (language == "EN") {
-        var apiSheet = myFile.getSheetByName("Values of API");
-        var rangRemove = apiSheet.getRange("B1:B4");
-        rangRemove.clearContent();
-    } else {
-        var apiSheet = myFile.getSheetByName("Các giá trị API");
-        var rangRemove = apiSheet.getRange("B1:B4");
-        rangRemove.clearContent();
+    var ui = SpreadsheetApp.getUi();
+    var apiSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Values of API");
+    if(apiSheet != null){
+      var result = ui.alert(
+          "Please confirm",
+          "Are you sure delete the Api key??",
+          ui.ButtonSet.YES_NO
+      );
     }
+    else{
+      var result = ui.alert(
+          "Vui lòng xác nhận",
+          "Bạn có chắc chắn xóa Api key?",
+          ui.ButtonSet.YES_NO
+      );
+    }
+
+    if (result == ui.Button.YES) {
+       
+      var myFile = SpreadsheetApp.getActiveSpreadsheet();
+      var language = getLanguage();
+      if (language == "EN") {
+          var apiSheet = myFile.getSheetByName("Values of API");
+          var rangRemove = apiSheet.getRange("B1:B4");
+          rangRemove.clearContent();
+      } else {
+          var apiSheet = myFile.getSheetByName("Các giá trị API");
+          var rangRemove = apiSheet.getRange("B1:B4");
+          rangRemove.clearContent();
+      }
+      }
 }
 
 function checkAPIKeyIsAvailable() {
@@ -139,6 +159,7 @@ function checkTokenIsAvailable() {
 }
 // cac ham trong menu ========================================================================================================
 function run_input_api() {
+  //Logger.log("a");
     // check is user run start app
     var language = getLanguage();
     if (language == "") {
